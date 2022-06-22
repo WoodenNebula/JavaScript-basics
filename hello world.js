@@ -1,7 +1,7 @@
 function helloWorld(){
     return "Hello World"
 }
-console.log(helloWorld())
+// console.log(helloWorld())
 console.log(helloWorld)
 
 const showName = () =>{
@@ -10,5 +10,5 @@ const showName = () =>{
     console.log(name + " " + surname)
 }
 
-console.log("This is " + showName)
-console.log("And this is " + showName())
+console.log("This is " + showName())
+// console.log("And this is " + showName())
