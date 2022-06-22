@@ -1,2 +1,4 @@
-Elo 
-console.log("Hello")
+function log(){
+    return "Hello World"
+}
+log()
