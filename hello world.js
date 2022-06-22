@@ -46,5 +46,12 @@ const arrayResult = [ //original Array
 const arrayPhysics = arrayResult.map(marks => marks.physics)
 console.log(arrayPhysics)
 
-const arrayComputer = arrayResult.map(marks => marks.chemistry)
+const arrayComputer = arrayResult.map(marks => marks.computer)
 console.log(arrayComputer)
+
+/*~~~~~~~~~~~~~~~~~~~USING DESTRUCT METHOD~~~~~~~~~~~~~~~~~~~*/
+const arrayChemistry = arrayResult.map(({chemistry}) => chemistry)
+console.log(arrayChemistry)
+
+const arrayMaths = arrayResult.map(({maths}) => maths)
+console.log(arrayMaths)
