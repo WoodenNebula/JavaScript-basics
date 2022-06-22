@@ -32,5 +32,4 @@ const arrayDetails = [
 
 const arrayName = arrayDetails.map(obj => obj.name)
 // const <New Array> = <Original_Array>.map() => <Original_Array>.map(element => element.<targeted_object>)
-
 console.log(arrayName)
