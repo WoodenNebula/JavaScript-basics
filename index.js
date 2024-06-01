@@ -39,7 +39,6 @@ const funcFizzBuzz = (n) => {
 }
 
 
-
 // Add 5 or Multiply by 3 to reach target
 function findSequenceTo(target) {
     let start = 1;

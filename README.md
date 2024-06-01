@@ -35,8 +35,8 @@ And Most Importantly
 
 ## Progress Tracking
 The commit messages will act as a summary for each day on what I learnt for the day, each commit starting with the Day Number followed by a summarized commit mmessage.
-Detailed log of what I learnt for the day will be posted in the twitter feed along with screenshots of any new diffs in the code. The images wont be tracked here but a link to each day's post will be maintained in a tabular basis below. Hopefully, I will have automated the process of linking the new tweet by the end of this learning period.
+Detailed log of what I learnt for the day will be posted in the twitter feed along with screenshots of any new diffs in the code. The images wont be tracked here but a link to each day's post will be maintained along with a summary in tabular basis below. Hopefully, I will have automated the process of linking the new tweet by the end of this learning period.
 <br>
-| Day | Post Link |
+| Day |  Summary |
 | --- | --------- |
-| 1 | |
+| [1](https://x.com/WoodenNebula/status/1796928307037888831) | Played around with function concepts: defining and declaring; recursion; arrays; function properties |
