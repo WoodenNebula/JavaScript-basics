@@ -40,3 +40,4 @@ Detailed log of what I learnt for the day will be posted in the twitter feed alo
 | Day |  Summary |
 | --- | --------- |
 | [1](https://x.com/WoodenNebula/status/1796928307037888831) | Played around with function concepts: defining and declaring; recursion; arrays; function properties |
+| [2](https://x.com/WoodenNebula/status/1797305922701701285) | Centered a(multiple) Div(s); Started Tic-Tac-Toe; DOM; Objects; HTML; CSS
