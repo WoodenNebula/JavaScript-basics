@@ -1,0 +1,51 @@
+.board {
+    width: auto;
+    height: auto;
+    background: #002369;
+    padding: 2%;
+    margin: 5%;
+
+    align-content: top;
+
+    text-align: center;
+    font-size: xx-large;
+    font-weight: bolder;
+    color: antiquewhite;
+
+    max-width: 100%;
+    margin: auto;
+}
+
+.board .row {
+    background-color: #696969;
+    color: black;
+
+    display: table;
+    clear: both;
+
+    justify-content: end;
+    justify-items: end;
+    align-items: center;
+    align-content: baseline;
+
+    width: 50%;
+    margin: auto;
+    padding: 1%;
+}
+
+.column {
+    color: black;
+
+    float: left;
+
+    width: 30%;
+    padding: 1%;
+    margin: 1%;
+
+    max-width: 100%;
+    margin: auto;
+
+    border: #ffffff;
+    border-style: inset;
+    border-width: 2px;
+}
