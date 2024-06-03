@@ -1,51 +1,27 @@
 .board {
-    width: auto;
-    height: auto;
-    background: #002369;
     padding: 2%;
-    margin: 5%;
+    margin: 4%;
 
-    align-content: top;
+    height: 100vh;
 
     text-align: center;
-    font-size: xx-large;
+    font-size: 12vh;
     font-weight: bolder;
-    color: antiquewhite;
-
-    max-width: 100%;
-    margin: auto;
+    color: rgb(255, 255, 255);
 }
 
-.board .row {
-    background-color: #696969;
-    color: black;
-
-    display: table;
-    clear: both;
-
-    justify-content: end;
-    justify-items: end;
-    align-items: center;
-    align-content: baseline;
-
-    width: 50%;
-    margin: auto;
-    padding: 1%;
+.grid-container {
+    height: 50vh;
+    margin: 5%;
+    padding: 2%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
 }
 
 .column {
-    color: black;
+    color: rgb(0, 0, 0);
+    background-color: rgb(30, 137, 219);
 
-    float: left;
-
-    width: 30%;
-    padding: 1%;
-    margin: 1%;
-
-    max-width: 100%;
-    margin: auto;
-
-    border: #ffffff;
-    border-style: inset;
-    border-width: 2px;
+    align-content: center;
 }
