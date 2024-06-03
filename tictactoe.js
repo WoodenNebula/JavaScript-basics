@@ -1,8 +1,8 @@
-function RandomNum(avoidList) {
-    let rand = Math.floor(Math.random() * 10);
-    while (!(rand < 9) && rand in avoidList) {
+function RandomNum() {
+    let rand = null;
+    do {
         rand = Math.floor(Math.random() * 10);
-    }
+    } while (rand > 8);
     return rand;
 }
 
@@ -11,22 +11,29 @@ const Player = {
     user: 1
 };
 
+
+function GetBoard() {
+    let board = [];
+    for (let row = 0; row < 3; row++) {
+        for (let column = 0; column < 3; column++) {
+            board.push(document.getElementById(`r${row}c${column}`));
+        }
+    }
+    return board;
+};
+
 const Board = {
+    boardState: GetBoard(),
     turnOfUser: true,
-    filled: [],
+    playableCells: [0, 1, 2, 3, 4, 5, 6, 7, 8],
     symbols: {
         user: 'X',
         bot: 'O'
     },
+    gameFinished: false,
 
-    _GetBoard() {
-        let board = [];
-        for (let row = 0; row < 3; row++) {
-            for (let column = 0; column < 3; column++) {
-                board.push(document.getElementById(`r${row}c${column}`));
-            }
-        }
-        return board;
+    UpdateBoard() {
+        this.boardState = GetBoard();
     },
 
     SetUserSymbol(symbol) {
@@ -36,59 +43,119 @@ const Board = {
         }
     },
 
+    PlayAsAt(player, pos) {
+        if (this.playableCells.includes(pos)) {
+            if (player === Player.user && this.turnOfUser) {
+                this.boardState[pos].textContent = this.symbols.user;
+            }
+            else if (player === Player.bot && !this.turnOfUser) {
+                this.boardState[pos].textContent = this.symbols.bot;
+            }
+            this.UpdateBoard();
+            this.playableCells.remove(pos);
+            this.turnOfUser = !this.turnOfUser;
 
-    
-    PlayAt(player, pos) {
-        if (!(pos in this.filled)) {
-            if (this.turnOfUser && player === Player.user) {
-                this._GetBoard()[pos].textContent = this.symbols.user;
-                this.turnOfUser = !this.turnOfUser;
-                this.filled.push(pos);
-                return true;
+            if ((winner = this.CheckWinner()) != null) {
+                setTimeout(() => {
+                    this.FinishGame(winner);
+                }, 0);
             }
-            else if (!this.turnOfUser && player === Player.bot) {
-                this._GetBoard()[pos].textContent = this.symbols.bot;
-                this.turnOfUser = !this.turnOfUser;
-                this.filled.push(pos);
-                return true;
-            }
-        } else {
-            console.log("POSITION ALREADY TAKEN!");
+
+            return true;
         }
         return false;
     },
 
     PlayUser(pos) {
-        console.log("User Attempt at " + pos);
-        return this.PlayAt(Player.user, pos);
+        return this.PlayAsAt(Player.user, pos);
     },
 
     PlayBot() {
-        const randInd = RandomNum(this.filled);
-        console.log("Bot Attempt at " + randInd);
-        this.PlayAt(Player.bot, randInd);
-        console.log(this.filled);
+        let randIndx;
+        let playAttempt;
+        do {
+            randIndx = RandomNum(this.playableCells);
+            playAttempt = this.PlayAsAt(Player.bot, randIndx);
+        } while (!playAttempt && this.playableCells.length > 0);
+
+        return playAttempt;
     },
 
-
-
-
-
-
-
-
     InitializeBoard() {
-        this._GetBoard().forEach(cell => {
+        this.gameFinished = false;
+        this.playableCells = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+        this.boardState.forEach(cell => {
             cell.textContent = '-';
-            cell.addEventListener("click", () => {
-                const pos = parseInt(cell.id[1]) * 3 + parseInt(cell.id[3]);
-                if (this.PlayUser(pos))
-                    this.PlayBot();
-            });
+            cell.addEventListener("click", handleUserClick);
         });
+
+        this.playableCells.remove = (element) => {
+            let index = this.playableCells.indexOf(element);
+            if (index > -1) {
+                this.playableCells.splice(index, 1);
+            }
+        }
+    },
+
+    CheckWinner() {
+        const detWinningPlayer = (winnerSymbol) => {
+            for (let prop in this.symbols) {
+                if (this.symbols[prop] === winnerSymbol) {
+                    return prop;
+                }
+            }
+        }
+
+
+        const winVerifier = (cellPattern) => {
+            let winningPlayer = null;
+
+            cellPattern.forEach((cells) => {
+                let cellEntries = [];
+
+                cells.forEach((cell) => {
+                    cellEntries.push(this.boardState[cell].textContent);
+                });
+
+                if (cellEntries[0] == cellEntries[1] &&
+                    cellEntries[1] == cellEntries[2] &&
+                    cellEntries[1] != '-') {
+                    winningPlayer = detWinningPlayer(cellEntries[1]);
+                }
+            });
+
+            return winningPlayer;
+        }
+
+        const rowIndices = [[0, 1, 2], [3, 4, 5], [6, 7, 8]];
+        const columnIndices = [[0, 3, 6], [1, 4, 7], [2, 5, 8]];
+        const diagonalIndices = [[0, 4, 8], [2, 4, 6]];
+
+        let winner = winVerifier(rowIndices) ?? winVerifier(columnIndices) ?? winVerifier(diagonalIndices);
+        winner ??= this.playableCells.length === 0 ? "Draw" : null;
+        return winner;
+    },
+
+    FinishGame(winner) {
+        this.gameFinished = true;
+        if (winner === "Draw")
+            alert(winner);
+        else
+            alert(`Winner is ${winner}!`);
+
+        this.InitializeBoard();
+        location.reload();
     }
+
 };
 
+
+function handleUserClick(e) {
+    const pos = parseInt(this.id[1]) * 3 + parseInt(this.id[3]);
+    if (Board.gameFinished != true)
+        if (Board.PlayUser(pos))
+            Board.PlayBot();
+}
 
 Board.InitializeBoard();
 Board.SetUserSymbol('X');

@@ -1,19 +1,20 @@
 .board {
     padding: 2%;
     margin: 4%;
-
+    margin-top: 8%;
     height: 100vh;
 
+    color: rgb(255, 255, 255);
     text-align: center;
     font-size: 12vh;
     font-weight: bolder;
-    color: rgb(255, 255, 255);
 }
 
 .grid-container {
     height: 50vh;
     margin: 5%;
     padding: 2%;
+
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
@@ -22,6 +23,5 @@
 .column {
     color: rgb(0, 0, 0);
     background-color: rgb(30, 137, 219);
-
     align-content: center;
 }
