@@ -42,3 +42,4 @@ Detailed log of what I learnt for the day will be posted in the twitter feed alo
 | [1](https://x.com/WoodenNebula/status/1796928307037888831) | Played around with function concepts: defining and declaring; recursion; arrays; function properties |
 | [2](https://x.com/WoodenNebula/status/1797305922701701285) | Centered a(multiple) Div(s); Started Tic-Tac-Toe; DOM; Objects; HTML; CSS |
 | [3](https://x.com/WoodenNebula/status/1797690270555017244) | Completed the base game; reworked the UI; introduce few bugs (alert plays twice on user win and the final drawing of user/bot's play is incosistent) |
+| [4](https://x.com/WoodenNebula/status/1798034422148821020) | Throw away object based spaghetti garbage and introduce function based pasta; Implement local pvp; Break pve🙃; Center some more div; Add fancy hover effect; Implement sneaky announcement system |
