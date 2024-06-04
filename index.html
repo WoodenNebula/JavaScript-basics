@@ -9,7 +9,21 @@
 </head>
 
 <body bgcolor="#101010">
-    <div class="board"> Tic-Tac-Toe
+    <div class="title"> Tic-Tac-Toe
+        <!-- <div class="gamemode">
+            <label for="gamemode">Gamemode:<br></label>
+            <select name="gamemode" id="options">
+                <option value="pvp">Verses Player</option>
+                <option value="pvE">Verses Computer</option>
+            </select>
+        </div> -->
+    </div>
+    <div class="announcement">
+        <button id="replayButton">REPLAY</button>
+        <H1 id="winner"></H1>
+    </div>
+
+    <div class="Board">
         <div class="grid-container">
             <div class="column" id="r0c0"> </div>
             <div class="column" id="r0c1"> </div>
