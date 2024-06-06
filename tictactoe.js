@@ -9,7 +9,6 @@ function randomNum() {
 
 const g_BoardStates = {
     cellLayout: getBoard(),
-    pvp: true,
     playableCells: Array(9),
     players: {
         bot: null,
@@ -63,7 +62,7 @@ function playPlayerTwo(pos) {
 }
 
 function playBot() {
-    return playCellAs(Player.bot, randomNum());
+    return playCellAs(randomNum(), g_BoardStates.players.bot);
 }
 
 function handleCellClick(pos) {
@@ -125,6 +124,8 @@ function attachEvents(cell) {
 function flipPlayerTurn(currentPlayer) {
     g_BoardStates.turnOfPlayer = currentPlayer === g_BoardStates.players.playerOneSym ?
         g_BoardStates.players.playerTwoSym : g_BoardStates.players.playerOneSym;
+
+    document.getElementById("current-player").textContent = `Playing: ${g_BoardStates.turnOfPlayer}`;
 }
 
 
@@ -140,20 +141,24 @@ function playCellAs(cellIndex, playerSymbol) {
     return false;
 }
 
+
 function initializeBoard() {
-    document.getElementById("replayButton").hidden = true;
-    document.getElementById("winner").hidden = true;
+    const selectedGamemode = document.getElementById("gamemode-selection");
 
 
-    g_BoardStates.gameRunning = true;
+    if (selectedGamemode.value === "pvp") {
+        g_BoardStates.pvp = true;
+    } else { g_BoardStates.pvp = false; }
+
+
     g_BoardStates.playableCells = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     g_BoardStates.cellLayout.forEach(cell => { cell.textContent = ''; });
 
     g_BoardStates.turnOfPlayer = g_BoardStates.players.playerOneSym;
-    // g_BoardStates.pvp = true;
     if (!g_BoardStates.pvp) {
-        g_BoardStates.players.bot = g_BoardStates.players.playerOneSym;
+        g_BoardStates.players.bot = g_BoardStates.players.playerTwoSym;
     }
+    g_BoardStates.turnOfPlayer = g_BoardStates.players.playerOneSym;
 
     g_BoardStates.playableCells.playAt = (cellIndex, playerSymbol) => {
         g_BoardStates.cellLayout[cellIndex].textContent = playerSymbol;
@@ -163,12 +168,22 @@ function initializeBoard() {
     }
 }
 
+
 function resetGame() {
     g_BoardStates.gameRunning = false;
 
-    const replayBtn = document.getElementById("replayButton");
+    document.getElementById("current-player").hidden = false;
+
+    replayBtn.textContent = "Replay";
     replayBtn.hidden = false;
-    replayBtn.addEventListener("click", initializeBoard, { once: true });
+
+    replayBtn.addEventListener("click", () => {
+        const winnerArea = document.getElementById("winner");
+        winnerArea.hidden = true;
+        winnerArea.textContent = '';
+        g_BoardStates.winner = null;
+        startGame();
+    });
 }
 
 function gameEnded() {
@@ -210,25 +225,59 @@ function gameEnded() {
 
 function declareWinner() {
     const declareArea = document.getElementById("winner");
+    const gameModeSelector = document.getElementById("gamemode-container");
+    const currentPlayer = document.getElementById("current-player");
+
+    currentPlayer.textContent = ''
+    gameModeSelector.hidden = false;
     declareArea.hidden = false;
-    if (g_BoardStates.playableCells.length === 0) {
-        declareArea.innerText = "DRAW";
-    }
-    else {
+
+    if (g_BoardStates.winner != null) {
         for (let player in g_BoardStates.players) {
-            if (g_BoardStates.players[player] === g_BoardStates.winner) {
+            if (!g_BoardStates.pvp && g_BoardStates.winner == g_BoardStates.players.bot) {
+                declareArea.style.color = g_BoardStates.players.bot === g_BoardStates.players.playerOneSym ? '#FFFFFF' : "#886464";
+                declareArea.innerText = "Winner is BOT";
+            } else if (g_BoardStates.players[player] === g_BoardStates.winner) {
+                declareArea.style.color = g_BoardStates.players[player] === g_BoardStates.players.playerOneSym ? '#FFFFFF' : "#886464";
                 declareArea.innerText = "Winner is Player: " + player.replace("Sym", "").replace("player", "").toUpperCase();
             }
         }
     }
+    else if (g_BoardStates.playableCells.length === 0) {
+        declareArea.style.color = "rgb(0, 255, 200)";
+        declareArea.innerText = "DRAW";
+    }
+    else {
+        alert("PANIK!");
+    }
 }
 
 function startGame() {
-    setPlayerOneSymbol('X');
+    const winnerDisplay = document.getElementById("winner");
+    const currentPlayer = document.getElementById("current-player");
+    currentPlayer.hidden = false;
+    replayBtn.hidden = true;
+
+
+    winnerDisplay.textContent = '';
+    winnerDisplay.hidden = true;
+    document.getElementById("gamemode-container").hidden = true;
+
+    g_BoardStates.gameRunning = true;
+
+    setPlayerOneSymbol('O');
     initializeBoard();
 
-    g_BoardStates.cellLayout.forEach(cell => { attachEvents(cell); });
+    currentPlayer.textContent = `Playing: ${g_BoardStates.turnOfPlayer}`;
 
+    g_BoardStates.cellLayout.forEach(cell => { attachEvents(cell); });
 }
 
-startGame();
+
+const replayBtn = document.getElementById("replay-button");
+replayBtn.textContent = "Start Game";
+
+
+replayBtn.addEventListener("click", () => {
+    startGame();
+})

@@ -9,33 +9,31 @@
 </head>
 
 <body bgcolor="#101010">
-    <div class="title"> Tic-Tac-Toe
-        <!-- <div class="gamemode">
-            <label for="gamemode">Gamemode:<br></label>
-            <select name="gamemode" id="options">
+    <div class="title"> Tic-Tac-Toe</div>
+    <div class="announcement">
+        <button id="replay-button">REPLAY</button>
+        <h1 id="current-player" hidden="true"></h1>
+        <h1 id="winner" hidden="true"></h1>
+        <div class="gamemode" id="gamemode-container">
+            <label for="gamemode">Gamemode:</label>
+            <select id="gamemode-selection">
                 <option value="pvp">Verses Player</option>
                 <option value="pvE">Verses Computer</option>
             </select>
-        </div> -->
-    </div>
-    <div class="announcement">
-        <button id="replayButton">REPLAY</button>
-        <H1 id="winner"></H1>
-    </div>
-
-    <div class="Board">
-        <div class="grid-container">
-            <div class="column" id="r0c0"> </div>
-            <div class="column" id="r0c1"> </div>
-            <div class="column" id="r0c2"> </div>
-            <div class="column" id="r1c0"> </div>
-            <div class="column" id="r1c1"> </div>
-            <div class="column" id="r1c2"> </div>
-            <div class="column" id="r2c0"> </div>
-            <div class="column" id="r2c1"> </div>
-            <div class="column" id="r2c2"> </div>
         </div>
     </div>
+    <div class="grid-container">
+        <div class="column" id="r0c0"> </div>
+        <div class="column" id="r0c1"> </div>
+        <div class="column" id="r0c2"> </div>
+        <div class="column" id="r1c0"> </div>
+        <div class="column" id="r1c1"> </div>
+        <div class="column" id="r1c2"> </div>
+        <div class="column" id="r2c0"> </div>
+        <div class="column" id="r2c1"> </div>
+        <div class="column" id="r2c2"> </div>
+    </div>
+    <!-- </div> -->
 
     <script src="./tictactoe.js"></script>
 </body>
