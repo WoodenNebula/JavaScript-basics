@@ -1,4 +1,4 @@
-function randomNum() {
+function randomIndex() {
     let rand = null;
     do {
         rand = Math.floor(Math.random() * 10);
@@ -14,10 +14,13 @@ const g_BoardStates = {
         bot: null,
         playerOneSym: 'X',
         playerTwoSym: 'O',
+        get maxPlayer() { return this.bot; },
+        get minPlayer() { return this.playerOneSym; }
     },
     turnOfPlayer: this.playerOneSym,
     winner: null,
     gameRunning: false,
+    hardDifficulty: true
 }
 
 
@@ -44,6 +47,7 @@ function setPlayerOneSymbol(playerOneSymbol) {
     }
 }
 
+
 function playPlayerOne(pos) {
     if (!g_BoardStates.pvp && g_BoardStates.players.playerOneSym === g_BoardStates.players.bot) {
         return playBot();
@@ -53,6 +57,7 @@ function playPlayerOne(pos) {
 
 }
 
+
 function playPlayerTwo(pos) {
     if (!g_BoardStates.pvp && g_BoardStates.players.playerTwoSym === g_BoardStates.players.bot) {
         return playBot();
@@ -61,9 +66,142 @@ function playPlayerTwo(pos) {
     }
 }
 
+
 function playBot() {
-    return playCellAs(randomNum(), g_BoardStates.players.bot);
+    let currState = [];
+    g_BoardStates.cellLayout.forEach(cell => {
+        currState.push(cell.textContent);
+    });
+
+    if (g_BoardStates.hardDifficulty === true) {
+        let bestIndex = findBestMove(currState);
+        return playCellAs(bestIndex, g_BoardStates.players.bot);
+    }
+
+    return playCellAs(randomIndex(), g_BoardStates.players.bot);
 }
+
+
+function findBestMove(currState) {
+    const isMaxPlayer = (g_BoardStates.players.bot === g_BoardStates.players.maxPlayer) ? true : false;
+    let bestMove = -1;
+
+    if (isMaxPlayer)
+        bestEval = -Infinity;
+    else if (!isMaxPlayer)
+        bestEval = +Infinity;
+
+    const possibleMoves = getPossibleMoves(currState);
+    possibleMoves.forEach(move => {
+        let eval = miniMax(applyMove(move, currState), !isMaxPlayer, - Infinity, Infinity, possibleMoves.length - 1);
+        if (isMaxPlayer && eval > bestEval) {
+            bestEval = eval;
+            bestMove = move;
+        } else if (!isMaxPlayer && eval < bestEval) {
+            bestEval = eval;
+            bestMove = move;
+        }
+    });
+    return bestMove;
+}
+
+
+function miniMax(currState, isMaxPlayer, alpha, beta, depth) {
+    if (gameEnded(currState) || depth === 0) {
+        return gameValue(currState, depth);
+    }
+    if (isMaxPlayer) {
+        let maxEval = -Infinity;
+        for (let possibleMove of getPossibleMoves(currState)) {
+            let eval = miniMax(applyMove(possibleMove, currState), false, alpha, beta, depth - 1);
+            if (eval > maxEval) {
+                maxEval = eval;
+            }
+            alpha = Math.max(alpha, eval);
+            if (beta <= alpha)
+                break;
+        }
+        return maxEval;
+    } else {
+        let minEval = Infinity;
+        for (let possibleMove of getPossibleMoves(currState)) {
+            let eval = miniMax(applyMove(possibleMove, currState), true, alpha, beta, depth - 1);
+            minEval = Math.min(minEval, eval);
+            beta = Math.min(beta, eval);
+            if (beta <= alpha)
+                break;
+        }
+        return minEval;
+    }
+}
+
+
+function flipPlayerTurn(currentPlayer) {
+    g_BoardStates.turnOfPlayer = currentPlayer === g_BoardStates.players.playerOneSym ?
+        g_BoardStates.players.playerTwoSym : g_BoardStates.players.playerOneSym;
+
+    document.getElementById("current-player").textContent = `Playing: ${g_BoardStates.turnOfPlayer}`;
+}
+
+
+function playCellAs(cellIndex, playerSymbol) {
+    if (g_BoardStates.playableCells.includes(cellIndex)) {
+        if (g_BoardStates.turnOfPlayer === playerSymbol) {
+            g_BoardStates.playableCells.playAt(cellIndex, playerSymbol);
+            updateBoard();
+            flipPlayerTurn(playerSymbol);
+            return true;
+        }
+    }
+    return false;
+}
+
+
+function playerTurn(state) {
+    let maxPlayerCount = 0;
+    let minPlayerCount = 0;
+
+    for (let player of state) {
+        if (player === g_BoardStates.players.maxPlayer)
+            maxPlayerCount++;
+        else if (player === g_BoardStates.players.minPlayer)
+            minPlayerCount++;
+    }
+    return maxPlayerCount < minPlayerCount ? g_BoardStates.players.maxPlayer : g_BoardStates.players.minPlayer;
+}
+
+
+function gameValue(currState, depth) {
+    if (gameEnded(currState)) {
+        switch (g_BoardStates.winner) {
+            case g_BoardStates.players.minPlayer:
+                return -10 + depth;
+            case g_BoardStates.players.maxPlayer:
+                return 10 - depth;
+            default:
+                return 0;
+        }
+    }
+}
+
+
+function getPossibleMoves(state) {
+    let possibleMoves = [];
+    for (let i = 0; i < state.length; i++) {
+        if (state[i] == '') {
+            possibleMoves.push(i);
+        }
+    }
+    return possibleMoves;
+}
+
+
+function applyMove(index, prevState) {
+    let newState = [...prevState];
+    newState[index] = playerTurn(prevState);
+    return newState;
+}
+
 
 function handleCellClick(pos) {
     switch (g_BoardStates.turnOfPlayer) {
@@ -121,26 +259,6 @@ function attachEvents(cell) {
     })
 }
 
-function flipPlayerTurn(currentPlayer) {
-    g_BoardStates.turnOfPlayer = currentPlayer === g_BoardStates.players.playerOneSym ?
-        g_BoardStates.players.playerTwoSym : g_BoardStates.players.playerOneSym;
-
-    document.getElementById("current-player").textContent = `Playing: ${g_BoardStates.turnOfPlayer}`;
-}
-
-
-function playCellAs(cellIndex, playerSymbol) {
-    if (g_BoardStates.playableCells.includes(cellIndex)) {
-        if (g_BoardStates.turnOfPlayer === playerSymbol) {
-            g_BoardStates.playableCells.playAt(cellIndex, playerSymbol);
-            updateBoard();
-            flipPlayerTurn(playerSymbol);
-            return true;
-        }
-    }
-    return false;
-}
-
 
 function initializeBoard() {
     const selectedGamemode = document.getElementById("gamemode-selection");
@@ -153,10 +271,12 @@ function initializeBoard() {
 
     g_BoardStates.playableCells = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     g_BoardStates.cellLayout.forEach(cell => { cell.textContent = ''; });
+    g_BoardStates.hardDifficulty = true;
 
     g_BoardStates.turnOfPlayer = g_BoardStates.players.playerOneSym;
     if (!g_BoardStates.pvp) {
         g_BoardStates.players.bot = g_BoardStates.players.playerTwoSym;
+
     }
     g_BoardStates.turnOfPlayer = g_BoardStates.players.playerOneSym;
 
@@ -186,13 +306,21 @@ function resetGame() {
     });
 }
 
-function gameEnded() {
+
+function gameEnded(gameState) {
+    if (gameState == undefined) {
+        gameState = [];
+        g_BoardStates.cellLayout.forEach(cell => {
+            gameState.push(cell.textContent);
+        });
+    }
+
     const gameVerifier = (matchPatterns) => {
         let gameFinished = matchPatterns.some((indices) => {
             let cellEntries = [];
 
             indices.forEach((index) => {
-                cellEntries.push(g_BoardStates.cellLayout[index].textContent);
+                cellEntries.push(gameState[index]);
             });
 
             if (cellEntries[0] === cellEntries[1] &&
@@ -215,13 +343,18 @@ function gameEnded() {
 
     if (gameVerifier(rowIndices) ||
         gameVerifier(columnIndices) ||
-        gameVerifier(diagonalIndices) ||
-        g_BoardStates.playableCells.length === 0) {
+        gameVerifier(diagonalIndices)) {
         return true;
-    } else {
+    }
+    else if (gameState.indexOf('') === -1) {
+        g_BoardStates.winner = 'Draw';
+        return true;
+    }
+    else {
         return false;
     }
 }
+
 
 function declareWinner() {
     const declareArea = document.getElementById("winner");
@@ -232,24 +365,21 @@ function declareWinner() {
     gameModeSelector.hidden = false;
     declareArea.hidden = false;
 
-    if (g_BoardStates.winner != null) {
-        for (let player in g_BoardStates.players) {
-            if (!g_BoardStates.pvp && g_BoardStates.winner == g_BoardStates.players.bot) {
-                declareArea.style.color = g_BoardStates.players.bot === g_BoardStates.players.playerOneSym ? '#FFFFFF' : "#886464";
-                declareArea.innerText = "Winner is BOT";
-            } else if (g_BoardStates.players[player] === g_BoardStates.winner) {
-                declareArea.style.color = g_BoardStates.players[player] === g_BoardStates.players.playerOneSym ? '#FFFFFF' : "#886464";
-                declareArea.innerText = "Winner is Player: " + player.replace("Sym", "").replace("player", "").toUpperCase();
-            }
-        }
-    }
-    else if (g_BoardStates.playableCells.length === 0) {
+    if (g_BoardStates.winner.toUpperCase() === "DRAW") {
         declareArea.style.color = "rgb(0, 255, 200)";
         declareArea.innerText = "DRAW";
+    } else if (!g_BoardStates.pvp && g_BoardStates.winner == g_BoardStates.players.bot) {
+        declareArea.style.color = g_BoardStates.players.bot === g_BoardStates.players.playerOneSym ? '#FFFFFF' : "#886464";
+        declareArea.innerText = "Winner is BOT";
+    } else if (g_BoardStates.winner === g_BoardStates.players.playerOneSym) {
+        declareArea.style.color = '#FFFFFF'
+        declareArea.innerText = "Winner is Player: ONE";
+    } else {
+        declareArea.style.color = "#886464";
+        declareArea.innerText = "Winner is Player: TWO";
     }
-    else {
-        alert("PANIK!");
-    }
+
+
 }
 
 function startGame() {

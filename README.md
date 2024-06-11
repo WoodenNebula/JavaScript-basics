@@ -45,3 +45,8 @@ Detailed log of what I learnt for the day will be posted in the twitter feed alo
 | [4](https://x.com/WoodenNebula/status/1798034422148821020) | Throw away object based spaghetti garbage and introduce function based pasta; Implement local pvp; Break pve🙃; Center some more div; Add fancy hover effect; Implement sneaky announcement system |
 | [5] | Theory Stuff |
 | [6](https://x.com/WoodenNebula/status/1798780832611750333) | Fix PvE; Tidy up UI; Implement Gamemode selection |
+| [7](https://x.com/WoodenNebula/status/1799111472783745531) | Theory - LearntJsinYmins |
+| [8](https://x.com/WoodenNebula/status/1799471831864455315) | Theory - Closures |
+| [9](https://x.com/WoodenNebula/status/1799865165162180949) | Theory + Start Work on minimax Algorithm |
+| [10] | Didn't make a post or commit since the algorithm wasnt working |
+| [11](https://x.com/WoodenNebula/status/1800590986579784091) | Implement imperfect minimax algorithm |
