@@ -50,3 +50,4 @@ Detailed log of what I learnt for the day will be posted in the twitter feed alo
 | [9](https://x.com/WoodenNebula/status/1799865165162180949) | Theory + Start Work on minimax Algorithm |
 | [10] | Didn't make a post or commit since the algorithm wasnt working |
 | [11](https://x.com/WoodenNebula/status/1800590986579784091) | Implement imperfect minimax algorithm |
+| [12](https://x.com/WoodenNebula/status/1800954664235815209) | Add a selection button for playing either X or O; clean up UI |

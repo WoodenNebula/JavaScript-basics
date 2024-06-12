@@ -24,7 +24,7 @@
 .announcement .gamemode {
     height: max-content;
     width: auto;
-    padding-left: 5%;
+    /* padding-left: 5%; */
     font-size: x-large;
     color: rgb(0, 255, 187);
     max-width: 100%;
@@ -53,33 +53,72 @@
 }
 
 .announcement #current-player {
-    /* display: flex; */
     align-items: center;
     justify-content: center;
     color: rgb(255, 255, 255)
 }
 
+.symbol-selection-buttons {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    height: 10vh;
+    margin-top: 1%;
+}
+
+.symbol-selection-buttons #button-X {
+    background-color: rgb(143, 172, 153);
+    border-radius: 20%;
+
+    width: 40%;
+    height: 100%;
+
+    justify-self: center;
+
+    color: #FFFFFF;
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.symbol-selection-buttons #button-O {
+    background-color: rgb(143, 172, 153);
+    border-radius: 20%;
+
+    justify-self: center;
+
+    width: 40%;
+    height: 100%;
+
+    color: #FFFFFF;
+    font-size: x-large;
+    font-weight: bold;
+}
+
 
 .grid-container {
+    display: grid;
     text-align: center;
     font-size: 12vh;
     font-weight: bolder;
 
+    justify-content: center;
+
     height: 65vh;
     max-height: max-content;
-    margin: 4%;
-    padding-left: 20%;
-    padding-right: 20%;
+    margin: 2%;
+    padding-left: 22%;
+    padding-right: 22%;
 
-    display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
+    gap: 10px;
 }
 
-.grid-container .column {
-    border-radius: 2vw;
+.grid-container .cell {
+    border-radius: 20%;
 
-    margin: 1%;
     color: rgb(71, 52, 52);
     background-color: rgb(111, 152, 184);
     align-content: center;

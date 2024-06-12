@@ -8,7 +8,7 @@ function randomIndex() {
 
 
 const g_BoardStates = {
-    cellLayout: getBoard(),
+    get cellLayout() { return getBoard(); },
     playableCells: Array(9),
     players: {
         bot: null,
@@ -32,11 +32,6 @@ function getBoard() {
         }
     }
     return board;
-};
-
-
-function updateBoard() {
-    g_BoardStates.cellLayout = getBoard();
 }
 
 
@@ -54,7 +49,6 @@ function playPlayerOne(pos) {
     } else {
         return playCellAs(pos, g_BoardStates.players.playerOneSym);
     }
-
 }
 
 
@@ -140,7 +134,7 @@ function flipPlayerTurn(currentPlayer) {
     g_BoardStates.turnOfPlayer = currentPlayer === g_BoardStates.players.playerOneSym ?
         g_BoardStates.players.playerTwoSym : g_BoardStates.players.playerOneSym;
 
-    document.getElementById("current-player").textContent = `Playing: ${g_BoardStates.turnOfPlayer}`;
+    elements.currentPlayer.textContent = `Playing: ${g_BoardStates.turnOfPlayer}`;
 }
 
 
@@ -148,7 +142,6 @@ function playCellAs(cellIndex, playerSymbol) {
     if (g_BoardStates.playableCells.includes(cellIndex)) {
         if (g_BoardStates.turnOfPlayer === playerSymbol) {
             g_BoardStates.playableCells.playAt(cellIndex, playerSymbol);
-            updateBoard();
             flipPlayerTurn(playerSymbol);
             return true;
         }
@@ -261,16 +254,12 @@ function attachEvents(cell) {
 
 
 function initializeBoard() {
-    const selectedGamemode = document.getElementById("gamemode-selection");
-
-
-    if (selectedGamemode.value === "pvp") {
+    if (elements.gameModeSelector.value === "pvp") {
         g_BoardStates.pvp = true;
     } else { g_BoardStates.pvp = false; }
 
 
     g_BoardStates.playableCells = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-    g_BoardStates.cellLayout.forEach(cell => { cell.textContent = ''; });
     g_BoardStates.hardDifficulty = true;
 
     g_BoardStates.turnOfPlayer = g_BoardStates.players.playerOneSym;
@@ -292,17 +281,18 @@ function initializeBoard() {
 function resetGame() {
     g_BoardStates.gameRunning = false;
 
-    document.getElementById("current-player").hidden = false;
+    elements.currentPlayer.hidden = false;
 
-    replayBtn.textContent = "Replay";
-    replayBtn.hidden = false;
+    elements.replayBtn.textContent = "Replay";
+    elements.replayBtn.hidden = false;
 
-    replayBtn.addEventListener("click", () => {
-        const winnerArea = document.getElementById("winner");
-        winnerArea.hidden = true;
-        winnerArea.textContent = '';
+    elements.replayBtn.addEventListener("click", () => {
+        elements.winnerDisplayArea.hidden = true;
+        elements.winnerDisplayArea.textContent = '';
+
+        g_BoardStates.cellLayout.forEach(cell => { cell.textContent = ''; });
         g_BoardStates.winner = null;
-        startGame();
+        displayInitialScene();
     });
 }
 
@@ -357,57 +347,63 @@ function gameEnded(gameState) {
 
 
 function declareWinner() {
-    const declareArea = document.getElementById("winner");
-    const gameModeSelector = document.getElementById("gamemode-container");
-    const currentPlayer = document.getElementById("current-player");
-
-    currentPlayer.textContent = ''
-    gameModeSelector.hidden = false;
-    declareArea.hidden = false;
+    elements.currentPlayer.textContent = '';
+    elements.winnerDisplayArea.hidden = false;
 
     if (g_BoardStates.winner.toUpperCase() === "DRAW") {
-        declareArea.style.color = "rgb(0, 255, 200)";
-        declareArea.innerText = "DRAW";
+        elements.winnerDisplayArea.style.color = "rgb(0, 255, 200)";
+        elements.winnerDisplayArea.innerText = "DRAW";
     } else if (!g_BoardStates.pvp && g_BoardStates.winner == g_BoardStates.players.bot) {
-        declareArea.style.color = g_BoardStates.players.bot === g_BoardStates.players.playerOneSym ? '#FFFFFF' : "#886464";
-        declareArea.innerText = "Winner is BOT";
+        elements.winnerDisplayArea.style.color = g_BoardStates.players.bot === g_BoardStates.players.playerOneSym ? '#FFFFFF' : "#886464";
+        elements.winnerDisplayArea.innerText = "Winner is BOT";
     } else if (g_BoardStates.winner === g_BoardStates.players.playerOneSym) {
-        declareArea.style.color = '#FFFFFF'
-        declareArea.innerText = "Winner is Player: ONE";
+        elements.winnerDisplayArea.style.color = '#FFFFFF'
+        elements.winnerDisplayArea.innerText = "Winner is Player: ONE";
     } else {
-        declareArea.style.color = "#886464";
-        declareArea.innerText = "Winner is Player: TWO";
+        elements.winnerDisplayArea.style.color = "#886464";
+        elements.winnerDisplayArea.innerText = "Winner is Player: TWO";
     }
-
-
 }
 
 function startGame() {
-    const winnerDisplay = document.getElementById("winner");
-    const currentPlayer = document.getElementById("current-player");
-    currentPlayer.hidden = false;
-    replayBtn.hidden = true;
+    // Hide stuffs
+    elements.gameModeContainer.hidden = true;
+    elements.symbolSelectionButtonContainer.style.display = "none";
 
-
-    winnerDisplay.textContent = '';
-    winnerDisplay.hidden = true;
-    document.getElementById("gamemode-container").hidden = true;
+    // Show stuffs
+    elements.currentPlayer.hidden = false;
+    elements.boardContainer.style.display = "grid";
 
     g_BoardStates.gameRunning = true;
 
-    setPlayerOneSymbol('O');
     initializeBoard();
 
-    currentPlayer.textContent = `Playing: ${g_BoardStates.turnOfPlayer}`;
+    elements.currentPlayer.textContent = `Playing: ${g_BoardStates.turnOfPlayer}`;
 
     g_BoardStates.cellLayout.forEach(cell => { attachEvents(cell); });
 }
 
+function displayInitialScene() {
+    // Hide previous stuff
+    elements.replayBtn.hidden = true;
 
-const replayBtn = document.getElementById("replay-button");
-replayBtn.textContent = "Start Game";
+    elements.winnerDisplayArea.textContent = '';
+    elements.winnerDisplayArea.hidden = true;
 
+    // Display current stuffs
+    elements.gameModeContainer.hidden = false;
+    elements.boardContainer.style.display = "grid";
+    elements.symbolSelectionButtonContainer.style.display = "grid";
 
-replayBtn.addEventListener("click", () => {
-    startGame();
-})
+    g_BoardStates.cellLayout.forEach(cell => { cell.textContent = ''; });
+
+    const symbolChoiceButtons = [elements.symbolXBtn, elements.symbolOBtn];
+    symbolChoiceButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            setPlayerOneSymbol(button.textContent[5]);
+            startGame();
+        })
+    })
+}
+
+displayInitialScene();
